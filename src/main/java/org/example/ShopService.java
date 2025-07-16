@@ -18,8 +18,8 @@ public class ShopService {
             // Rückgabe ist jetzt Optional
             Optional<Product> productOpt = productRepo.getProductById(productId);
             if (productOpt.isEmpty()) {
-                System.out.println("Product mit der Id: " + productId + " konnte nicht bestellt werden!");
-                return null;
+                // Statt System.out.println eine Exception werfen
+                throw new ProductNotFoundException(productId);
             }
             // Produkt aus dem Optional extrahieren
             products.add(productOpt.get());
