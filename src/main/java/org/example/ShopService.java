@@ -1,14 +1,17 @@
 package org.example;
 
+import lombok.RequiredArgsConstructor;
+
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@RequiredArgsConstructor
 public class ShopService {
-    private ProductRepo productRepo = new ProductRepo();
-    private OrderRepo orderRepo = new OrderMapRepo();
+    private final ProductRepo productRepo;
+    private final OrderRepo orderRepo;
 
     public Order addOrder(List<String> productIds) {
         List<Product> products = new ArrayList<>();
@@ -25,7 +28,7 @@ public class ShopService {
                 UUID.randomUUID().toString(),
                 products,
                 OrderStatus.PROCESSING,
-                Instant.now()   // <-- Bestellzeitpunkt hinzufügen
+                Instant.now()
         );
 
         return orderRepo.addOrder(newOrder);
@@ -42,11 +45,9 @@ public class ShopService {
     }
 
     public List<Order> getOrdersByStatus(OrderStatus status) {
-        return orderRepo.getOrders()
-                .stream()
+        // Achtung: .toList() ist ab Java 16, für ältere Versionen bitte collect(Collectors.toList())
+        return orderRepo.getOrders().stream()
                 .filter(order -> order.status() == status)
                 .toList();
     }
-
-
 }
