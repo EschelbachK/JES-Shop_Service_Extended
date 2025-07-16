@@ -39,4 +39,20 @@ class ShopServiceTest {
 
         assertEquals("2", exception.getProductId(), "Exception sollte die ungültige Produkt-ID enthalten");
     }
+    @Test
+    void getOrdersByStatus_returnsMatchingOrders() {
+        // GIVEN
+        ShopService shopService = new ShopService();
+        shopService.addOrder(List.of("1"));  // PROCESSING
+        Order completedOrder = shopService.addOrder(List.of("1"));
+        shopService.updateOrder(completedOrder.id(), OrderStatus.COMPLETED);
+
+        // WHEN
+        List<Order> completedOrders = shopService.getOrdersByStatus(OrderStatus.COMPLETED);
+
+        // THEN
+        assertEquals(1, completedOrders.size());
+        assertEquals(OrderStatus.COMPLETED, completedOrders.get(0).status());
+    }
+
 }
