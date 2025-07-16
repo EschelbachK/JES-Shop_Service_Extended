@@ -36,4 +36,15 @@ public class ShopService {
         );
         return orderRepo.addOrder(newOrder);
     }
+    public Order updateOrder(String orderId, OrderStatus newStatus) {
+        Optional<Order> existingOrderOpt = Optional.ofNullable(orderRepo.getOrderById(orderId));
+        if (existingOrderOpt.isEmpty()) {
+            throw new OrderNotFoundException(orderId);
+        }
+
+        Order updatedOrder = existingOrderOpt.get().withStatus(newStatus);
+        return orderRepo.updateOrder(updatedOrder);
+    }
+
+
 }
