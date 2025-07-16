@@ -1,5 +1,6 @@
 package org.example;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -12,30 +13,24 @@ public class ShopService {
     public Order addOrder(List<String> productIds) {
         List<Product> products = new ArrayList<>();
 
-        // Produkt-IDs durchgehen und Optional prüfen
         for (String productId : productIds) {
-
-            // Rückgabe ist jetzt Optional
             Optional<Product> productOpt = productRepo.getProductById(productId);
             if (productOpt.isEmpty()) {
-                // Statt System.out.println eine Exception werfen
                 throw new ProductNotFoundException(productId);
             }
-            // Produkt aus dem Optional extrahieren
             products.add(productOpt.get());
         }
 
-        // Order hat jetzt zusätzlich den Bestellstatus als dritten Parameter
         Order newOrder = new Order(
-                // eindeutige ID erzeugen
                 UUID.randomUUID().toString(),
                 products,
-
-                // Standardstatus beim Erstellen einer neuen Bestellung
-                OrderStatus.PROCESSING
+                OrderStatus.PROCESSING,
+                Instant.now()   // <-- Bestellzeitpunkt hinzufügen
         );
+
         return orderRepo.addOrder(newOrder);
     }
+
     public Order updateOrder(String orderId, OrderStatus newStatus) {
         Optional<Order> existingOrderOpt = Optional.ofNullable(orderRepo.getOrderById(orderId));
         if (existingOrderOpt.isEmpty()) {
@@ -45,6 +40,5 @@ public class ShopService {
         Order updatedOrder = existingOrderOpt.get().withStatus(newStatus);
         return orderRepo.updateOrder(updatedOrder);
     }
-
 
 }
