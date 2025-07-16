@@ -1,9 +1,6 @@
 package org.example;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -25,16 +22,18 @@ class ProductRepoTest {
 
     @org.junit.jupiter.api.Test
     void getProductById() {
-        //GIVEN
+        // GIVEN
         ProductRepo repo = new ProductRepo();
 
-        //WHEN
-        Product actual = repo.getProductById("1");
+        // WHEN
+        Optional<Product> actual = repo.getProductById("1");
 
-        //THEN
+        // THEN
         Product expected = new Product("1", "Apfel");
-        assertEquals(actual, expected);
+        assertTrue(actual.isPresent(), "Produkt sollte vorhanden sein");
+        assertEquals(expected, actual.get());
     }
+
 
     @org.junit.jupiter.api.Test
     void addProduct() {
